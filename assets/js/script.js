@@ -1,65 +1,65 @@
 // 获取 Cookie 函数
-function getCookie(name) {
-  const cookies = document.cookie.split("; ");
+function getCookie (name) {
+  const cookies = document.cookie.split('; ')
   for (const cookie of cookies) {
-    const [cookieName, cookieValue] = cookie.split("=");
+    const [cookieName, cookieValue] = cookie.split('=')
     if (cookieName === name) {
-      return cookieValue;
+      return cookieValue
     }
   }
-  return "";
+  return ''
 }
 
 // 获取 Cookie
-const sessionKey = getCookie("sessionKey");
-const userId = getCookie("userId");
+const sessionKey = getCookie('sessionKey')
+const userId = getCookie('userId')
 
 // 每 10 分钟刷新一次 Session
-setInterval(refreshSession, 10 * 60 * 1000);
+setInterval(refreshSession, 10 * 60 * 1000)
 // 刷新 Session 函数
-function refreshSession() {
-  const xhr = new XMLHttpRequest();
+function refreshSession () {
+  const xhr = new XMLHttpRequest()
   xhr.open(
-    "GET",
+    'GET',
     `session_refresh.php?sessionKey=${sessionKey}&userId=${userId}`,
     true
-  );
-  xhr.send();
+  )
+  xhr.send()
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      alert("Session Refreshed");
+      alert('Session Refreshed')
     }
-  };
+  }
 }
 
 // 添加 Todo 函数
-function addTodo() {
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
-  const deadline = document.getElementById("deadline").value;
-  const priority = document.getElementById("priority").value;
-  const finished = document.getElementById("finished").checked;
+function addTodo () {
+  const title = document.getElementById('title').value
+  const content = document.getElementById('content').value
+  const deadline = document.getElementById('deadline').value
+  const priority = document.getElementById('priority').value
+  const finished = document.getElementById('finished').checked
 
   // 验证数据
-  if (title === "") {
-    alert("Title cannot be empty!");
-    return;
+  if (title === '') {
+    alert('Title cannot be empty!')
+    return
   }
-  if (content === "") {
-    alert("Content cannot be empty!");
-    return;
+  if (content === '') {
+    alert('Content cannot be empty!')
+    return
   }
-  if (deadline === "") {
-    alert("Deadline cannot be empty!");
-    return;
+  if (deadline === '') {
+    alert('Deadline cannot be empty!')
+    return
   }
-  if (priority === "") {
-    alert("Priority cannot be empty!");
-    return;
+  if (priority === '') {
+    alert('Priority cannot be empty!')
+    return
   }
 
   // 获取当前时间
-  const addTime = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const addTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
   // 把数据打包成对象
   const todoInfo = {
@@ -68,25 +68,25 @@ function addTodo() {
     addTime,
     deadline,
     priority,
-    finished,
-  };
+    finished
+  }
 
   // 发送请求
-  const xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest()
   xhr.open(
-    "GET",
+    'GET',
     `add.php?sessionKey=${sessionKey}&userId=${userId}&todoInfo=${JSON.stringify(
       todoInfo
     )}`,
     true
-  );
-  xhr.send();
+  )
+  xhr.send()
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      const result = xhr.responseText;
-      if (result === "OK") {
-        alert("Todo Added");
+      const result = xhr.responseText
+      if (result === 'OK') {
+        alert('Todo Added')
       }
     }
-  };
+  }
 }
