@@ -14,8 +14,9 @@ function getCookie(name) {
 const sessionKey = getCookie("sessionKey");
 const userId = getCookie("userId");
 
-// 每十分钟刷新一次 Session
+// 每 10 分钟刷新一次 Session
 setInterval(refreshSession, 10 * 60 * 1000);
+// 刷新 Session 函数
 function refreshSession() {
   const xhr = new XMLHttpRequest();
   xhr.open(
