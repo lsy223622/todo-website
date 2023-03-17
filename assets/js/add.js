@@ -71,3 +71,24 @@ function getCookie(name) {
   }
   return "";
 }
+
+// 定义一个定时器，每 10 分钟执行一次回调函数
+setInterval(refreshSession, 10 * 60 * 1000);
+
+// 定义回调函数
+function refreshSession() {
+  // 创建 XMLHttpRequest 对象
+  const xhr = new XMLHttpRequest();
+
+  // 发送 GET 请求到 session_refresh.php
+  xhr.open("GET", `session_refresh.php?sessionKey=${sessionKey}&userId=${userId}`, true);
+  xhr.send();
+
+  // 处理响应
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // TODO: 处理响应
+      alert("Session Refreshed")
+    }
+  };
+}
