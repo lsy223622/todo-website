@@ -5,9 +5,29 @@ function addTask() {
   const priority = document.getElementById("priority").value;
   const finished = document.getElementById("finished").checked;
 
+  // 验证数据
+  if (title === "") {
+    alert("Title cannot be empty!");
+    return;
+  }
+  if (content === "") {
+    alert("Content cannot be empty!");
+    return;
+  }
+  if (deadline === "") {
+    alert("Deadline cannot be empty!");
+    return;
+  }
+  if (priority === "") {
+    alert("Priority cannot be empty!");
+    return;
+  }
+
+  // 获取当前时间
   const addTime = new Date().toISOString().slice(0, 19).replace("T", " ");
 
-  const task = {
+  // 把数据打包成对象
+  const todoInfo = {
     title,
     content,
     addTime,
@@ -16,23 +36,31 @@ function addTask() {
     finished,
   };
 
+  // 获取 Cookie
   const sessionKey = getCookie("sessionKey");
   const userId = getCookie("userId");
 
+  // 发送请求
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", "add.php", true);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onreadystatechange = function () {
+  xhr.open(
+    "GET",
+    `add.php?sessionKey=${sessionKey}&userId=${userId}&todoInfo=${JSON.stringify(
+      todoInfo
+    )}`,
+    true
+  );
+  xhr.send();
+  xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      const response = xhr.responseText;
-      if (response === "OK") {
-        alert("Task added!");
+      let result = xhr.responseText;
+      if (result === "OK") {
+        alert("Todo Added");
       }
     }
   };
-  xhr.send(JSON.stringify({ sessionKey, userId, task }));
 }
 
+// 获取 Cookie 函数
 function getCookie(name) {
   const cookies = document.cookie.split("; ");
   for (const cookie of cookies) {
