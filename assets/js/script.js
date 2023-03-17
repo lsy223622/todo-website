@@ -1,3 +1,37 @@
+// 获取 Cookie 函数
+function getCookie(name) {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [cookieName, cookieValue] = cookie.split("=");
+    if (cookieName === name) {
+      return cookieValue;
+    }
+  }
+  return "";
+}
+
+// 获取 Cookie
+const sessionKey = getCookie("sessionKey");
+const userId = getCookie("userId");
+
+// 每十分钟刷新一次 Session
+setInterval(refreshSession, 10 * 60 * 1000);
+function refreshSession() {
+  const xhr = new XMLHttpRequest();
+  xhr.open(
+    "GET",
+    `session_refresh.php?sessionKey=${sessionKey}&userId=${userId}`,
+    true
+  );
+  xhr.send();
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      alert("Session Refreshed");
+    }
+  };
+}
+
+// 添加 Todo 函数
 function addTodo() {
   const title = document.getElementById("title").value;
   const content = document.getElementById("content").value;
@@ -36,10 +70,6 @@ function addTodo() {
     finished,
   };
 
-  // 获取 Cookie
-  const sessionKey = getCookie("sessionKey");
-  const userId = getCookie("userId");
-
   // 发送请求
   const xhr = new XMLHttpRequest();
   xhr.open(
@@ -52,39 +82,10 @@ function addTodo() {
   xhr.send();
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      let result = xhr.responseText;
+      const result = xhr.responseText;
       if (result === "OK") {
         alert("Todo Added");
       }
-    }
-  };
-}
-
-// 获取 Cookie 函数
-function getCookie(name) {
-  const cookies = document.cookie.split("; ");
-  for (const cookie of cookies) {
-    const [cookieName, cookieValue] = cookie.split("=");
-    if (cookieName === name) {
-      return cookieValue;
-    }
-  }
-  return "";
-}
-
-// 每十分钟刷新一次 Session
-setInterval(refreshSession, 10 * 60 * 1000);
-function refreshSession() {
-  const xhr = new XMLHttpRequest();
-  xhr.open(
-    "GET",
-    `session_refresh.php?sessionKey=${sessionKey}&userId=${userId}`,
-    true
-  );
-  xhr.send();
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      alert("Session Refreshed");
     }
   };
 }
